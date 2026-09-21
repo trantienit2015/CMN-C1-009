@@ -1,0 +1,19 @@
+# Runtime parameters — loaded by AgentRegistry, passed as Graph(config=...).
+# Separate file from config/agent.yaml (the static manifest). Moved here from
+# the legacy agent.config: block during the §5-0 manifest migration.
+
+max_retry: 3
+timeout_seconds: 30
+
+# Default taxonomy, set per deployment (docs/02 §5). A parent Cat 2 agent passes
+# label_list in the invocation payload and overrides this; a person chatting
+# sends prose with no taxonomy, so without a default here the run would fail on
+# TAXONOMY_EMPTY and the reply would come back blank.
+classification_mode: "multi-class"
+confidence_threshold: 0.7
+label_list:
+  - "billing"
+  - "technical"
+  - "sales"
+  - "account"
+  - "other"

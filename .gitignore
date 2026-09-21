@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv/
+venv/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Env
+.env
+*.env.local
+.ruff_cache/
+.mypy_cache/
+
+# CoE-distributed reference files — do not commit (criterion #14).
+# ci_stubs/ forbidden: framework.* resolves via the CI include.
+CLAUDE.md
+security_rules/
+ci_stubs/
+MANIFEST.md

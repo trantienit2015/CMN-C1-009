@@ -1,0 +1,51 @@
+[project]
+name = "cmn-c1-009"
+version = "0.1.2"
+description = "ClassificationAgent — AgentCore Template (Cat 1, CMN)"
+requires-python = ">=3.11"
+# The framework (agenticstar-agentcore) is NOT a public-PyPI dependency and is
+# deliberately NOT pinned here: it is installed from the package registry by
+# AGENTCORE_WHEEL_SPEC (the run-tests job in .gitlab-ci.yml, and the Marketplace
+# image build). Pinning it here would both break `pip install -e .` off the
+# default index and silently override the fleet wheel spec during the editable
+# install that runs after it (CLAUDE.md §7-0).
+# pyyaml is a real runtime dependency: PB-7 imports it to read config/config.yaml
+# when checking hitl.enabled.
+dependencies = [
+    "agenticstar-agentcore[marketplace,openai]==1.0.3",
+    "pyyaml==6.0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.1.1",
+    "pytest-cov==5.0.0",
+    "pytest-asyncio==0.23.6",
+    "ruff==0.4.4",
+    "mypy==1.10.0",
+]
+
+[build-system]
+requires = ["setuptools==68.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+# `AgentBaseGraph` / `GraphNode` / `FunctionNode` come from a wheel that ships no
+# py.typed, so mypy resolves them to Any and strict's disallow_subclassing_any
+# reports the inheritance CLAUDE.md §2-1 actually requires. Declaring the fact
+# once here beats scattering per-node `# type: ignore[misc]`.
+disallow_subclassing_any = false
+
+[[tool.mypy.overrides]]
+# Fleet-standard: the wheel ships no py.typed, so framework.*/shared.* read as
+# "installed but untyped". This declares that fact -- it is NOT
+# disable_error_code, which would suppress checking of our own code.
+# Remove this section and re-measure once the wheel ships py.typed.
+module = ["framework.*", "shared.*", "langgraph.*", "langchain_core.*"]
+ignore_missing_imports = true
